@@ -113,7 +113,9 @@ WEATHER_PATTERNS = [
     r"\bis it going to snow\b",
     r"\bforecast for\b",
     r"\bweather like\b",
-    r"\bwhat is todays weather"
+    r"\bwhat is todays weather",
+    r"\bwhat is today's weather",
+    r"\bwhat is today weather"
 ]
 
 
@@ -175,6 +177,6 @@ def process_text(user_input: str) -> str:
             return get_weather()
 
 
-output = process_text("what is todays weather")
-print(output)
+# output = process_text("what is todays weather")
+# print(output)
 

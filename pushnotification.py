@@ -18,3 +18,13 @@ def push_notification():
     conn.getresponse()
 
 # push_notification()
+
+def reminder_notification(text):
+    conn = http.client.HTTPSConnection("api.pushover.net:443")
+    conn.request("POST", "/1/messages.json",
+      urllib.parse.urlencode({
+        "token": token,
+        "user": user,
+        "message": f"{text}",
+              }), { "Content-type": "application/x-www-form-urlencoded" })
+    conn.getresponse()

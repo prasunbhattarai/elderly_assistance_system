@@ -2,8 +2,6 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi import WebSocket, WebSocketDisconnect
-
-
 import whisper
 import uuid
 import os
@@ -11,11 +9,10 @@ import json
 import time
 import threading
 from datetime import datetime
-
 import edge_tts
 from model_logic import process_text
-
 from contextlib import asynccontextmanager
+from pushnotification import reminder_notification
 
 
 
@@ -48,6 +45,7 @@ def read_reminder():
                 reminder_id = f"{reminder['task']}_{reminder['time']}"
                 if reminder["time"] == current_time and reminder_id not in last_triggered:
                     print(f" Reminder: {reminder['task']}")
+                    reminder_notification(reminder['task'])
                     last_triggered.add(reminder_id)
 
             time.sleep(60)
@@ -96,13 +94,12 @@ async def ask_voice(audio: UploadFile = File(...)):
 
     print("🤖 AI:", response_text)
 
-    # TTS
     communicate = edge_tts.Communicate(response_text, VOICE)
     await communicate.save(output_path)
 
     os.remove(input_audio)
 
-    audio_url = f"https://simplified-engineer-gary-forests.trycloudflare.com/audio/{output_audio}"
+    audio_url = f"http://localhost:8000/audio/{output_audio}"
 
 
     dead_clients = set()

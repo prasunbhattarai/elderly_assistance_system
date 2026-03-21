@@ -1,16 +1,11 @@
-/* =======================
-   AUDIO SETUP
-======================= */
+
 const audioPlayer = new Audio();
 audioPlayer.autoplay = true;
 
 let audioUnlocked = localStorage.getItem("audioUnlocked") === "true";
 
-/* =======================
-   WEBSOCKET
-======================= */
 const ws = new WebSocket(
-  "wss://simplified-engineer-gary-forests.trycloudflare.com/ws"
+  "ws://localhost:8000/ws"
 );
 
 ws.onmessage = (event) => {
@@ -27,18 +22,14 @@ ws.onmessage = (event) => {
   }
 };
 
-/* =======================
-   ELEMENTS
-======================= */
+
 const video = document.getElementById("video");
 const talkBtn = document.getElementById("talkBtn");
 const enableSoundBtn = document.getElementById("enableSoundBtn");
 
 enableSoundBtn.style.display = audioUnlocked ? "none" : "block";
 
-/* =======================
-   UNLOCK AUDIO
-======================= */
+
 async function unlockAudio() {
   try {
     audioPlayer.src = "";
@@ -54,9 +45,7 @@ async function unlockAudio() {
 enableSoundBtn.addEventListener("click", unlockAudio);
 talkBtn.addEventListener("click", unlockAudio);
 
-/* =======================
-   MIC RECORDING
-======================= */
+
 let audioStream = null;
 
 talkBtn.addEventListener("click", async (e) => {
@@ -82,7 +71,7 @@ talkBtn.addEventListener("click", async (e) => {
       formData.append("audio", blob, "voice.webm");
 
       await fetch(
-        "https://simplified-engineer-gary-forests.trycloudflare.com/ask_voice",
+        "http://localhost:8000/ask_voice",
         {
           method: "POST",
           body: formData,

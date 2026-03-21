@@ -3,10 +3,30 @@ import re
 from datetime import datetime
 def extract_time(text):
     text = text.lower()
+    text = text.replace('.', ':')
 
-    match = re.search(r'\b(\d{1,2}):(\d{2})\b', text)
+    match = re.search(r'\b(\d{1,2}):(\d{2})\s*(am|pm)?\b', text)
     if match:
-        hour, minute = map(int, match.groups())
+        hour, minute = int(match.group(1)), int(match.group(2))
+        period = match.group(3)
+
+        if period == "pm" and hour != 12:
+            hour += 12
+        if period == "am" and hour == 12:
+            hour = 0
+
+        return f"{hour:02d}:{minute:02d}"
+
+    match = re.search(r'\b(\d{1,2})\s+(\d{2})\s*(am|pm)?\b', text)
+    if match:
+        hour, minute = int(match.group(1)), int(match.group(2))
+        period = match.group(3)
+
+        if period == "pm" and hour != 12:
+            hour += 12
+        if period == "am" and hour == 12:
+            hour = 0
+
         return f"{hour:02d}:{minute:02d}"
 
     match = re.search(r'\b(\d{1,2})\s*(am|pm|o\'?clock)?\b', text)
@@ -22,6 +42,7 @@ def extract_time(text):
         return f"{hour:02d}:00"
 
     return None
+
 
 def extract_task(text):
     text = text.lower()
@@ -68,25 +89,3 @@ def extract_reminder(text):
     return new_reminder
 
 
-import time
-from datetime import datetime
-import json
-
-# def read_reminder():
-#     json_path = "./reminder.json"
-
-#     while True:
-#         with open(json_path, "r") as f:
-#             reminder_list = json.load(f)
-
-#         current_time = datetime.now().strftime("%H:%M")
-
-
-#         for reminder in reminder_list:
-#             if reminder["time"] == current_time:
-#                 print(f" Reminder: {reminder['task']}")
-          
-
-#         time.sleep(60)  
-
-# read_reminder()
